@@ -1,0 +1,36 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:public;MODE=PostgreSQL;INIT=CREATE DOMAIN IF NOT EXISTS JSONB AS JSON;
+    username: admin
+    password: admin
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+
+
+resilience4j:
+  retry:
+    instances:
+      externalRetry:
+        max-attempts: 3
+        wait-duration: 100ms
+        enable-exponential-backoff: true
+        exponential-backoff-multiplier: 2
+  circuitbreaker:
+    instances:
+      externalCircuitBreaker:
+        wait-duration-in-open-state: 1m
+        permitted-number-of-calls-in-half-open-state: 5
+        sliding-window-type: count-based
+        sliding-window-size: 5
+        minimum-number-of-calls: 10
+        slow-call-duration-threshold: 10s
+        slow-call-rate-threshold: 20
+        failure-rate-threshold: 20
+
+logging:
+  level:
+    com:
+      project:
+        challenge: INFO
+    org:
+      springframework: INFO
