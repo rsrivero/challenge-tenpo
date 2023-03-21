@@ -1,0 +1,44 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/challenge_tenpo
+    username: test
+    password: test
+  sql:
+    init:
+      mode: always
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    generate-ddl: true
+    show-sql: false
+    hibernate:
+      ddl-auto: update
+  main:
+    allow-bean-definition-overriding: true
+
+resilience4j:
+  retry:
+    instances:
+      externalRetry:
+        max-attempts: 3
+        wait-duration: 100ms
+        enable-exponential-backoff: true
+        exponential-backoff-multiplier: 2
+  circuitbreaker:
+    instances:
+      externalCircuitBreaker:
+        wait-duration-in-open-state: 1m
+        permitted-number-of-calls-in-half-open-state: 5
+        sliding-window-type: count-based
+        sliding-window-size: 5
+        minimum-number-of-calls: 10
+        slow-call-duration-threshold: 10s
+        slow-call-rate-threshold: 20
+        failure-rate-threshold: 20
+
+logging:
+  level:
+    com:
+      project:
+        challenge: INFO
+    org:
+      springframework: INFO
